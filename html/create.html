@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join page</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/custom.js"></script>
+    <script src="../js/device_check.js"></script>
+</head>
+<script src="../js/navigation.js"></script>
+<script src="../js/categories.js"></script>
+<script src="../js/questions.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        kategorija(); 
+        loadCategories();
+    });
+
+    function isMobileDevice() {
+        return (window.innerWidth <= 768) || 
+               (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    }
+
+    if (isMobileDevice()) {
+        document.getElementById('mobileMessage').style.display = 'block';
+        document.body.style.pointerEvents = 'none';
+    } else {
+        fetch('../php/lock_manager.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('lockMessage').style.display = 'block';
+                    document.body.style.pointerEvents = 'none';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    window.addEventListener('beforeunload', function() {
+        if (!isMobileDevice()) {
+            fetch('../php/lock_manager.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=unload'
+            });
+        }
+    });
+</script>
+<body>
+    <div id="lockMessage" class="lock-message">
+        <h2>Page is Locked</h2>
+        <p>This page is currently being used by another user. Please try again later.</p>
+    </div>
+
+    <div id="mobileMessage" class="mobile-message">
+        <h2>Desktop Only</h2>
+        <p>This application is only available on desktop devices. Please use a computer to access this page.</p>
+    </div>
+
+    <h1 class="create">Izveidot spēli</h1>
+    <div class="logo-button">
+        <a href="home.html">
+            <img id="logoButtonImg" src="../images/sadancis.png" alt="Button" title="Home" />
+        </a>
+    </div>
+    <div class="create_container">
+        <div class="side">
+            <form id="questionForm" onsubmit="submitQuestion(event)">
+                <div class="category-form-section">
+                    <div>
+                        <label for="jauna_kategorija">Pievienot jaunu kategoriju:</label><br>
+                        <input type="text" id="jauna_kategorija" class="answers" name="jauna_kategorija" placeholder="Ievadiet jauno kategoriju" />
+                        
+                        <button type="button" class="submit" onclick="pievieno_kategoriju()">Pievienot kategoriju</button>
+                        <div>
+                            <label for="categoryImage">Pievienot kategorijas attēlu:</label><br>
+                            <input type="file" id="categoryImage" name="categoryImage" accept="image/*" onchange="previewCategoryImage()"/>
+                            <div id="categoryImagePreviewContainer">
+                                <img id="categoryImagePreview" alt="Category Image Preview" />
+                            </div>
+                        </div>
+                        <p id="categoryMessage" class="success">Kategorija pievienota veiksmīgi!</p>
+                    </div>
+                </div>
+
+                <div class="question-form-section">
+                    <div>
+                        <label for="kategorija">Kategorija:</label><br>
+                        <select class="answers" id="kategorija" name="kategorija">
+                            <option value="" disabled selected>Atlasiet kategoriju</option>
+                        </select>                                             
+                    </div>                               
+                    <div><label class="question" for="question">Jautājums:</label><br>
+                    <textarea id="question" name="question" rows="3" cols="50" placeholder="Ievadiet jautājumu" required></textarea>
+                    
+                    </div>
+                
+                    <div>
+                        <br><label for="difficulty">Grūtības pakāpe</label><br>
+                        <select class="answers" id="difficulty" name="difficulty">
+                            <option value="" disabled selected>Atlasiet jautājuma grūtības pakāpi</option>
+                            <option value="10">10 punkti</option>
+                            <option value="20">20 punkti</option>
+                            <option value="30">30 punkti</option>
+                            <option value="40">40 punkti</option>
+                            <option value="50">50 punkti</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="correctAnswer">Pareizā atbilde:</label><br>
+                            <input class="answers" type="text" id="correctAnswer" name="correctAnswer" placeholder="Pareizā atbilde" required>
+                        </select>
+                        
+                    </div>
+                    <div>
+                        <p>Pievienot attēlu</p>
+                        <input type="file" id="myFile" name="filename" accept="image/*" onchange="previewQuestionImage()" />
+
+                        <div id="questionImagePreviewContainer">
+                            <img id="questionImagePreview" alt="Question Image Preview" />
+                        </div>
+                    </div>
+                    <br>
+                    <button class="submit_button" type="button" onclick="submitQuestion(event)">Pievienot jautājumu</button>
+                    
+                    <p id="questionMessage" class="success">Jautājums pievienots veiksmīgi!</p>
+                </div>
+            </form>
+        </div>
+        <div class="divider"></div>
+        <div class="side" id="rightSection">
+            <h2>Kategorijas</h2>
+            <div id="display_kategorijas"></div> 
+        </div>
+        <div id="infoModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="modalTitle">Jautājumi</h2>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="button">
+            <button onclick="back()">Atpakaļ</button>
+        </div>
+    </footer>
+
+    <div id="customAlertDialog" class="custom-alert-modal" style="display: none;">
+        <div class="custom-alert-content">
+            <p id="customAlertMessage"></p>
+            <button class="custom-alert-button" onclick="closeCustomAlert()">OK</button>
+            <div id="customConfirmButtons" style="display: none;">
+                <button class="custom-alert-button confirm-button" id="confirmYes">Jā</button>
+                <button class="custom-alert-button cancel-button" id="confirmNo">Nē</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
