@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Page</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <h1>Pielāgot lapu</h1>
+    <div class="logo-button">
+        <a href="home.html">
+            <img id="logoButtonImg" src="../images/sadancis.png" alt="Button" title="Home" />
+        </a>
+    </div>
+
+    <div class="customize-section">
+        <label for="colorPicker">Izvēlēties fona krāsu:</label>
+        <div class="input-group">
+            <input type="color" id="colorPicker">
+            <button onclick="saveColor()">Save Color</button>
+        </div>
+    </div>
+
+    <div class="customize-section">
+        <label for="imageUpload">Sākuma lapas attēlu:</label>
+        <div class="input-group">
+            <input type="file" id="imageUpload" accept="image/*">
+            <button onclick="saveImage()">Save Image</button>
+        </div>
+    </div>
+
+    <div class="customize-section title-customization">
+        <div class="row">
+            <label for="pageTitleColor">Virsraksta krāsa:</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="pageTitleColor">
+            </div>
+        </div>
+        <div class="row">
+            <label for="homeTitle">Sākuma lapas virsraksts:</label>
+            <input type="text" id="homeTitle" placeholder="Ievadiet virsrakstu">
+        </div>
+        <div class="row">
+            <label for="startTitle">Spēles lapas virsraksts:</label>
+            <input type="text" id="startTitle" placeholder="Ievadiet virsrakstu">
+        </div>
+        <button onclick="savePageTitles()">Saglabāt</button>
+    </div>
+
+    <div class="button">
+        <button onclick="openRulesCustomizeModal()">Pielāgot Noteikumus</button>
+    </div>
+
+    <div id="rulesCustomizeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeRulesCustomizeModal()">&times;</span>
+            <h2>Noteikumu pielāgošana</h2>
+            <div class="modal-scrollable-content">
+                <div class="rule-customization-section">
+                    <label for="rulesTitleText">Noteikumu virsraksts:</label>
+                    <input type="text" id="rulesTitleText" placeholder="Ievadiet virsrakstu">
+                </div>
+                <div class="rule-customization-section">
+                    <label for="rulesParagraphText">Noteikumu teksts:</label>
+                    <textarea id="rulesParagraphText" placeholder="Ievadiet noteikumu tekstu" rows="6" cols="50"></textarea>
+                </div>
+                <div class="rule-customization-section">
+                    <label for="gameRulesTitleText">Spēles noteikumu virsraksts:</label>
+                    <input type="text" id="gameRulesTitleText" placeholder="Ievadiet virsrakstu">
+                </div>
+                <div class="rule-customization-section">
+                    <label for="gameRulesParagraphText">Spēles noteikumu teksts:</label>
+                    <textarea id="gameRulesParagraphText" placeholder="Ievadiet noteikumu tekstu" rows="6" cols="50"></textarea>
+                </div>
+                <div class="rule-customization-section">
+                    <label for="rulesTextColor">Teksta krāsa:</label>
+                    <input type="color" id="rulesTextColor">
+                </div>
+            </div>
+            <button onclick="saveRules()">Saglabāt noteikumus</button>
+        </div>
+    </div>
+
+    <div class="button">
+        <button onclick="back()">Atpakaļ</button>
+    </div>
+
+    <script src="../js/navigation.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/custom.js"></script>
+
+    <div id="customAlertDialog" class="custom-alert-modal">
+        <div class="custom-alert-content">
+            <p id="customAlertMessage"></p>
+            <button class="custom-alert-button" onclick="closeCustomAlert()">OK</button>
+            <div id="customConfirmButtons" style="display: none;">
+                <button id="confirmYes" class="confirm-button">Yes</button>
+                <button id="confirmNo" class="cancel-button">No</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
